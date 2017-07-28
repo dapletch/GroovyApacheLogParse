@@ -1,5 +1,5 @@
 group 'logparse'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 apply plugin: 'groovy'
 apply plugin: 'java'
@@ -14,5 +14,25 @@ dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.3.11'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    compile group: 'joda-time', name: 'joda-time', version: '2.9.9'
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+jar {
+    // including the version number
+    archiveName = "ApacheLogParse" + version + ".jar"
+    from {
+        // collects all the dependencies at runtime
+        configurations.runtime.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+        // collects all the compiled dependencies and packages them into the jar
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    manifest {
+        attributes 'Main-Class': 'com.pletcherwebdesign.logparse.App'
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
 }

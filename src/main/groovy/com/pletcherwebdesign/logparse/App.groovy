@@ -9,8 +9,11 @@ class App {
     static Logger log = LoggerFactory.getLogger(App.class)
 
     static void main(String[] args) {
-        if (LogUtils.isLogFileValid(new File(args[0]))) {
+
+        if (args.length > 0 && LogUtils.isLogFileValid(new File(args[0]))) {
             log.info("File is valid: " + args[0])
+        } else {
+            log.info("No file was inputted...")
         }
     }
 }
