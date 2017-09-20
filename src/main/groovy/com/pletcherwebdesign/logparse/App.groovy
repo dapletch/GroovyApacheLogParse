@@ -23,7 +23,7 @@ class App implements CommandLineRunner {
         if (args.length > 0) {
             log.info("Argument inputted: ", args)
         } else {
-            System.out.println("No arguments inputted. Please try again...")
+            log.error("No arguments inputted. Please try again...")
         }
     }
 }
