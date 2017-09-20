@@ -3,17 +3,27 @@ package com.pletcherwebdesign.logparse
 import com.pletcherwebdesign.logparse.utils.LogUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.boot.CommandLineRunner
+import org.springframework.boot.SpringApplication
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.scheduling.annotation.EnableScheduling
 
-class App {
+@EnableScheduling
+@SpringBootApplication
+class App implements CommandLineRunner {
 
     static Logger log = LoggerFactory.getLogger(App.class)
 
     static void main(String[] args) {
+        SpringApplication.run(App.class)
+    }
 
-        if (args.length > 0 && LogUtils.isLogFileValid(new File(args[0]))) {
-            log.info("File is valid: " + args[0])
+    @Override
+    void run(String... args) throws Exception {
+        if (args.length > 0) {
+            log.info("Argument inputted: ", args)
         } else {
-            log.info("No file was inputted...")
+            System.out.println("No arguments inputted. Please try again...")
         }
     }
 }

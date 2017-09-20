@@ -12,12 +12,15 @@ repositories {
 
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.3.11'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '1.5.7.RELEASE'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     compile group: 'joda-time', name: 'joda-time', version: '2.9.9'
+    // JUNIT Testing TODO need to find a way to add unit testing
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
+// creating the uber jar
 jar {
     // including the version number
     archiveName = "ApacheLogParse" + version + ".jar"
