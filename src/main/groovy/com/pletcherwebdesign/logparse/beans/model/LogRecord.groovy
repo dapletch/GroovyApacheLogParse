@@ -38,4 +38,17 @@ class LogRecord {
     @Column(name = "time_entered")
     DateTime timeEntered
 
+    LogRecord() {
+    }
+
+    LogRecord(Long id, String ipAddress, String remoteUser, DateTime timeAccessed, String request, Integer statCode, Integer bytesSent, DateTime timeEntered) {
+        this.id = id
+        this.ipAddress = ipAddress
+        this.remoteUser = remoteUser
+        this.timeAccessed = timeAccessed
+        this.request = request
+        this.statCode = statCode
+        this.bytesSent = bytesSent
+        this.timeEntered = timeEntered
+    }
 }
