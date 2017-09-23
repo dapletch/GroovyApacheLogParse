@@ -19,6 +19,11 @@ class ParseLog {
     File logFile
     DateTime timeEntered
 
+    ParseLog(File logFile, DateTime timeEntered) {
+        this.logFile = logFile
+        this.timeEntered = timeEntered
+    }
+
     // list to save log records
     def logRecords = []
 
@@ -44,7 +49,7 @@ class ParseLog {
             ".*?" + // Non-greedy match on filler
             "(\\d+)" // Integer Number 2
 
-    def parseLogWriteToDb(ParseLog parseLog) {
+    static def parseLogWriteToDb(ParseLog parseLog) {
 
     }
 
