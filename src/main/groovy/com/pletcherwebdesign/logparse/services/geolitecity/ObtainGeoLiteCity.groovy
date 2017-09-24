@@ -61,6 +61,11 @@ class ObtainGeoLiteCity {
         gis.close()
         fos.close()
 
-        return LogUtils.isFileValid(new File(geoLiteFile))
+        // setting the GeoLiteCity.dat file to read only for security purposes
+        def geoLiteFileWithPermissions = new File(geoLiteFile).setReadable(true, true)
+        if (geoLiteFileWithPermissions) {
+            return LogUtils.isFileValid(new File(geoLiteFile))
+        }
+        return false
     }
 }
