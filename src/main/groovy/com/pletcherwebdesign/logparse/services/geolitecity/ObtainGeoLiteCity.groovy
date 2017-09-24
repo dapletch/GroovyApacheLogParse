@@ -61,6 +61,6 @@ class ObtainGeoLiteCity {
         gis.close()
         fos.close()
 
-        return LogUtils.isLogFileValid(new File(geoLiteFile))
+        return LogUtils.isFileValid(new File(geoLiteFile))
     }
 }

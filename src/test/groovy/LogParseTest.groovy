@@ -1,12 +1,11 @@
-import com.pletcherwebdesign.logparse.beans.configuration.geolitecity.GeoLiteCityConfig
-import com.pletcherwebdesign.logparse.beans.configuration.geolitecity.GeoLiteCityProperties
+import com.pletcherwebdesign.logparse.services.accesslogs.ConcatenateAccessLogs
 import com.pletcherwebdesign.logparse.services.geolitecity.ObtainGeoLiteCity
 import junit.framework.TestCase
 import junit.framework.TestSuite
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.ComponentScan
+import org.springframework.core.env.Environment
 
 /**
  * Created by Seth on 9/20/2017.
@@ -44,5 +43,10 @@ class LogParseTest extends TestCase {
         def obtainGeoLiteCity = new ObtainGeoLiteCity()
         // testing if everything succeeded, and there was no exception thrown
         assertTrue(obtainGeoLiteCity.downloadGeoLiteCityFile())
+    }
+
+    void testConcatenateFiles() {
+        def concatenateFiles = new ConcatenateAccessLogs()
+        assertTrue(concatenateFiles.concatenateAccessLogs())
     }
 }

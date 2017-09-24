@@ -8,7 +8,7 @@ import org.joda.time.format.DateTimeFormat
  */
 class LogUtils {
 
-    static isLogFileValid(File file) {
+    static isFileValid(File file) {
         if (file.isFile() && file.exists() && !file.isDirectory()) {
             return true
         }
@@ -17,5 +17,9 @@ class LogUtils {
 
     static DateTime formatLogDateToDateTime(String dateStr) {
         return DateTime.parse(dateStr, DateTimeFormat.forPattern("dd/MMM/yyyy:HH:mm:ss Z")).toDateTime();
+    }
+
+    static formatDateTimeForLog(DateTime dateTime) {
+        return DateTimeFormat.forPattern("yyyy-MM-dd").print(dateTime)
     }
 }
