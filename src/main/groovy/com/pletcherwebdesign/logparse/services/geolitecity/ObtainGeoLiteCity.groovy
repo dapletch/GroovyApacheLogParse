@@ -4,6 +4,7 @@ import com.pletcherwebdesign.logparse.beans.configuration.geolitecity.GeoLiteCit
 import com.pletcherwebdesign.logparse.beans.configuration.geolitecity.GeoLiteCityProperties
 import com.pletcherwebdesign.logparse.utils.LogUtils
 import com.pletcherwebdesign.logparse.utils.OSUtils
+import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.stereotype.Service
@@ -27,6 +28,8 @@ class ObtainGeoLiteCity {
 
     static def downloadGeoLiteCityFile() {
         try {
+            // back up the preexisting GeoLiteCity.dat.gz file, just in case something goes wrong downloading the file
+            backUpGeoLiteCityFile()
             // downloading the file GeoLiteCity.dat.gz file
             log.info("GeoLiteCityProperties: " + geoLiteCityProperties.toString())
             def geoLiteFile = "${OSUtils.filePathAboveCurrentOne}${geoLiteCityProperties.geoLiteFileGz}"
@@ -67,5 +70,17 @@ class ObtainGeoLiteCity {
             return LogUtils.isFileValid(new File(geoLiteFile))
         }
         return false
+    }
+
+    // creating this method just in case something goes wrong with downloading the file
+    static def backUpGeoLiteCityFile() {
+        def dateStr = LogUtils.formatDateTimeForLog(new DateTime())
+        def geoLiteFile = new File("${OSUtils.filePathAboveCurrentOne}${geoLiteCityProperties.geoLiteFile}")
+        def geoLiteFileBackup = new File("${OSUtils.filePathAboveCurrentOne}${geoLiteCityProperties.geoLiteFile}.${dateStr}")
+        if (LogUtils.isFileValid(geoLiteFile)) {
+            // renaming file to GeoLiteCity.dat.dateStr
+            log.info("Renaming the ${geoLiteFile} to ${geoLiteFileBackup}")
+            geoLiteFile.renameTo(geoLiteFileBackup)
+        }
     }
 }
