@@ -1,18 +1,16 @@
+import com.pletcherwebdesign.logparse.beans.configuration.email.MessageBody
+import com.pletcherwebdesign.logparse.services.sendemail.SendEmail
 import com.pletcherwebdesign.logparse.services.accesslogs.ConcatenateAccessLogs
 import com.pletcherwebdesign.logparse.services.geolitecity.ObtainGeoLiteCity
 import junit.framework.TestCase
 import junit.framework.TestSuite
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.AnnotationConfigApplicationContext
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.core.env.Environment
 
 /**
  * Created by Seth on 9/20/2017.
  * Using JUNIT for integration/regression testing
  */
 
-@ComponentScan
 class LogParseTest extends TestCase {
 
     def log = LoggerFactory.getLogger(LogParseTest.class)
@@ -48,5 +46,26 @@ class LogParseTest extends TestCase {
     void testConcatenateFiles() {
         def concatenateFiles = new ConcatenateAccessLogs()
         assertTrue(concatenateFiles.concatenateAccessLogs())
+    }
+
+    void testSendEmailNoAttachment() {
+        def message = new MessageBody(
+                "seth.pletcher@gmail.com",
+                "Testing123",
+                "Testing the email configuration."
+        )
+        log.info("Message: " + message.toString())
+        SendEmail.sendEmailNoAttachmentIncluded(message)
+    }
+
+    void testSendEmailAttachmentIncluded() {
+        def message = new MessageBody(
+                "seth.pletcher@gmail.com",
+                "Testing123",
+                "Testing the email configuration.",
+                new File(getClass().getClassLoader().getResource("testEmail.txt").getFile()).toString()
+        )
+        log.info("Message: " + message.toString())
+        SendEmail.sendEmailAttachmentIncluded(message)
     }
 }

@@ -6,7 +6,6 @@ import org.springframework.context.annotation.PropertySource
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
 
-
 /**
  * Created by Seth on 9/23/2017.
  */
