@@ -2,6 +2,8 @@ import com.pletcherwebdesign.logparse.beans.configuration.email.MessageBody
 import com.pletcherwebdesign.logparse.services.sendemail.SendEmail
 import com.pletcherwebdesign.logparse.services.accesslogs.ConcatenateAccessLogs
 import com.pletcherwebdesign.logparse.services.geolitecity.ObtainGeoLiteCity
+import com.pletcherwebdesign.logparse.utils.LogUtils
+import com.pletcherwebdesign.logparse.utils.OSUtils
 import junit.framework.TestCase
 import junit.framework.TestSuite
 import org.slf4j.LoggerFactory
@@ -59,11 +61,12 @@ class LogParseTest extends TestCase {
     }
 
     void testSendEmailAttachmentIncluded() {
+        // might have to run IDE/Intellij as administrator if you are sending an attachment
         def message = new MessageBody(
                 "seth.pletcher@gmail.com",
                 "Testing123",
                 "Testing the email configuration.",
-                new File(getClass().getClassLoader().getResource("testEmail.txt").getFile()).toString()
+                new File("${OSUtils.filePathAboveCurrentOne}testEmail.txt").toString()
         )
         log.info("Message: " + message.toString())
         SendEmail.sendEmailAttachmentIncluded(message)

@@ -7,15 +7,21 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.core.io.FileSystemResource
+import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
+import sun.rmi.transport.Transport
 
+import javax.activation.DataHandler
+import javax.activation.FileDataSource
 import javax.mail.Message
 import javax.mail.MessagingException
 import javax.mail.Session
 import javax.mail.internet.InternetAddress
+import javax.mail.internet.MimeBodyPart
 import javax.mail.internet.MimeMessage
+import javax.mail.internet.MimeMultipart
 
 /**
  * Created by Seth on 9/24/2017.
@@ -38,19 +44,19 @@ class SendEmail {
         this.smtpProperties = smtpProperties
     }
 
+    def props = [
+            'mail.smtp.starttls.enable' : smtpProperties.startTlsEnable,
+            'mail.smtp.host' : smtpProperties.host,
+            'mail.smtp.user' : smtpProperties.username,
+            'mail.smtp.password' : smtpProperties.password,
+            'mail.smtp.port' : smtpProperties.port,
+            'mail.smtp.auth' : smtpProperties.authentication,
+            'mail.smtp.debug' : smtpProperties.mailDebug
+    ] as Properties
+
     void sendEmailNoAttachment(MessageBody messageBody)  {
-        def props = [
-                'mail.smtp.starttls.enable' : smtpProperties.startTlsEnable,
-                'mail.smtp.host' : smtpProperties.host,
-                'mail.smtp.user' : smtpProperties.username,
-                'mail.smtp.password' : smtpProperties.password,
-                'mail.smtp.port' : smtpProperties.port,
-                'mail.smtp.auth' : smtpProperties.authentication,
-                'mail.smtp.debug' : smtpProperties.mailDebug
-        ] as Properties
         log.info("Properties: " + props.toString())
         def session = Session.getInstance(props)
-
         try {
             // create a default MimeMessage
             def message = new MimeMessage(session)
@@ -73,16 +79,17 @@ class SendEmail {
     }
 
     void sendEmailWithAttachment(MessageBody messageBody) {
-        // TODO Need to get method working use link as reference https://stackoverflow.com/questions/16117365/sending-mail-attachment-using-java
-        def mimeMessage = javaMailSender.createMimeMessage()
+        log.info("Properties: " + props.toString())
         try {
+            def mimeMessage = javaMailSender.createMimeMessage()
             def helper = new MimeMessageHelper(mimeMessage, true)
-            helper.from = new InternetAddress(smtpProperties.username)
-            helper.to = new InternetAddress(messageBody.recipient)
-            helper.subject = messageBody.subject
-            helper.text = messageBody.message
-            def attachment = new FileSystemResource(messageBody.attachment)
-            helper.addAttachment(attachment.filename, attachment)
+            helper.setFrom(smtpProperties.username)
+            helper.setTo(messageBody.recipient)
+            helper.setSubject(messageBody.subject)
+            helper.setText(messageBody.message)
+            // Adding the attachment
+            FileSystemResource attachment = new FileSystemResource(messageBody.attachment)
+            helper.addAttachment(attachment.getFilename(), attachment)
             javaMailSender.send(mimeMessage)
             log.info("Message with attachment has been sent successfully.")
         } catch (MessagingException e) {
