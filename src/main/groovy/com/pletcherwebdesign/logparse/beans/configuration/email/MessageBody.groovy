@@ -16,6 +16,10 @@ class MessageBody {
     MessageBody() {
     }
 
+    MessageBody(String recipient) {
+        this.recipient = recipient
+    }
+
     MessageBody(String recipient, String subject, String message) {
         this.recipient = recipient
         this.subject = subject

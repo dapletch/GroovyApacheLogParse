@@ -6,6 +6,7 @@ import com.pletcherwebdesign.logparse.utils.LogUtils
 import com.pletcherwebdesign.logparse.utils.OSUtils
 import junit.framework.TestCase
 import junit.framework.TestSuite
+import org.junit.Test
 import org.slf4j.LoggerFactory
 
 /**
@@ -71,4 +72,23 @@ class LogParseTest extends TestCase {
         log.info("Message: " + message.toString())
         SendEmail.sendEmailAttachmentIncluded(message)
     }
+
+    void testSendEmailIfExceptionThrown() {
+        def exceptionThrown
+        def message = new MessageBody(
+                "seth.pletcher@gmail.com",
+                "Testing123",
+                "Testing the email configuration."
+        )
+        try {
+            throw new Exception("An exception was thrown")
+        } catch (Exception e) {
+            exceptionThrown = true
+            log.info("An exception was thrown", e)
+            SendEmail.sendEmailNoAttachmentIncluded(message)
+        }
+        assertTrue(exceptionThrown)
+    }
+
+
 }

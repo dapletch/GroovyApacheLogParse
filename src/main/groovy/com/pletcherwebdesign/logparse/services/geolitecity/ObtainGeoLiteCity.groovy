@@ -1,7 +1,9 @@
 package com.pletcherwebdesign.logparse.services.geolitecity
 
+import com.pletcherwebdesign.logparse.beans.configuration.email.MessageBody
 import com.pletcherwebdesign.logparse.beans.configuration.geolitecity.GeoLiteCityConfig
 import com.pletcherwebdesign.logparse.beans.configuration.geolitecity.GeoLiteCityProperties
+import com.pletcherwebdesign.logparse.services.sendemail.SendEmail
 import com.pletcherwebdesign.logparse.utils.LogUtils
 import com.pletcherwebdesign.logparse.utils.OSUtils
 import org.joda.time.DateTime
@@ -21,9 +23,8 @@ import java.util.zip.GZIPInputStream
 class ObtainGeoLiteCity {
 
     private static def context = new AnnotationConfigApplicationContext(GeoLiteCityConfig.class)
-
-    private static GeoLiteCityProperties geoLiteCityProperties = context.getBean(GeoLiteCityProperties.class)
-
+    private static def geoLiteCityProperties = context.getBean(GeoLiteCityProperties.class)
+    private static def message = context.getBean(MessageBody.class)
     private static def log = LoggerFactory.getLogger(ObtainGeoLiteCity.class)
 
     static def downloadGeoLiteCityFile() {
@@ -41,6 +42,12 @@ class ObtainGeoLiteCity {
             return extractGeoLiteCityFile()
         } catch (Exception e) {
             log.error("An exception was thrown while obtaining ${geoLiteCityProperties.geoLiteFileGz}", e)
+            SendEmail.sendEmailNoAttachmentIncluded(
+                    new MessageBody(message.recipient,
+                            "An exception occurred while obtaining ${geoLiteCityProperties.geoLiteFileGz} file",
+                            "There was an exception thrown while obtaining the GeoLiteCity.dat file: \n ${e.toString()}"
+                    )
+            )
             return false
         }
     }
