@@ -1,5 +1,6 @@
 package com.pletcherwebdesign.logparse.beans.configuration.accesslogs
 
+import com.pletcherwebdesign.logparse.beans.configuration.email.MessageBody
 import com.pletcherwebdesign.logparse.utils.LogUtils
 import com.pletcherwebdesign.logparse.utils.OSUtils
 import org.joda.time.DateTime
@@ -25,12 +26,17 @@ class AccessLogsConfig {
     }
 
     @Bean
-    AccessLogsProperties getAccessLogProperties() {
+    def accessLogProperties() {
         def dateStr = LogUtils.formatDateTimeForLog(new DateTime())
         return new AccessLogsProperties(
                 env.getProperty("logfile.directory"),
                 "${env.getProperty("logfile.prefix")}.${dateStr}.txt",
                 new File("${OSUtils.filePathAboveCurrentOne}ApacheAccessLog${dateStr}.txt")
         )
+    }
+
+    @Bean
+    def messageBody() {
+        return new MessageBody(env.getProperty("smtp.recipient"))
     }
 }
